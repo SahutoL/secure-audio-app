@@ -1,23 +1,79 @@
-import logo from './logo.svg';
-import './App.css';
+// frontend/src/App.js
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
+  const [token, setToken] = useState(null);
+  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    // Example login request to get JWT token
+    axios
+      .post("http://localhost:5000/login", {
+        username: "user",
+        password: "password",
+      })
+      .then((response) => {
+        setToken(response.data.access_token);
+      })
+      .catch((error) => {
+        console.error("Error logging in:", error);
+      });
+  }, []);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUpload = () => {
+    if (!file || !token) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    axios
+      .post("http://localhost:5000/upload", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log("File uploaded:", response.data);
+        fetchFiles();
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+      });
+  };
+
+  const fetchFiles = () => {
+    axios
+      .get("http://localhost:5000/files", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setFiles(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching files:", error);
+      });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>File Upload</h1>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+      <h2>Uploaded Files</h2>
+      <ul>
+        {files.map((file, index) => (
+          <li key={index}>{file}</li>
+        ))}
+      </ul>
     </div>
   );
 }
