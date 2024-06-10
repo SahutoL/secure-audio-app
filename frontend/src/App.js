@@ -32,7 +32,7 @@ function App() {
 
   const fetchToken = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:5000/token", {
+      const response = await axios.post("https://secure-audio-app.onrender.com/token", {
         username: "username",
         password: "password",
       });
@@ -49,7 +49,7 @@ function App() {
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/files", {
+      const response = await axios.get("https://secure-audio-app.onrender.com/files", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +66,7 @@ function App() {
 
   const handleFileClick = async (fileName) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/files/${fileName}`, {
+      const response = await fetch(`https://secure-audio-app.onrender.com/files/${fileName}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -94,7 +94,7 @@ function App() {
     formData.append("file", selectedFile);
 
     try {
-      await axios.post("http://127.0.0.1:5000/upload", formData, {
+      await axios.post("https://secure-audio-app.onrender.com/upload", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
