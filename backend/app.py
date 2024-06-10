@@ -14,7 +14,7 @@ USERS = {
 }
 
 app = Flask(__name__)
-CORS(app, origins="http://localhost:3000")
+CORS(app, origins="https://secure-audio-app.vercel.app")
 app.config['UPLOAD_FOLDER'] = 'files'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 app.config['SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
