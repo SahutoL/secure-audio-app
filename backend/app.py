@@ -41,7 +41,7 @@ def token_required(f):
 @app.route('/files', methods=['GET'])
 @token_required
 def list_files():
-    files = [{"name": f, "title": os.path.splitext(f)[0]} for f in os.listdir(app.config['UPLOAD_FOLDER']) if allowed_file(f)]
+    files = [{"name": f, "title": os.path.splitext(f)[0]} for f in os.listdir("backend/files") if allowed_file(f)]
     return jsonify(files)
 
 @app.route('/files/<filename>', methods=['GET'])
@@ -49,7 +49,7 @@ def list_files():
 def get_file(filename):
     try:
         filename = secure_filename(filename)
-        return send_file(os.path.join('../files', filename), as_attachment=True)
+        return send_file(os.path.join('files', filename), as_attachment=True)
     except Exception as e:
         return jsonify({"msg": str(e)}), 500
 
@@ -63,7 +63,7 @@ def upload_file():
         return jsonify({"msg": "No selected file"}), 400
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file.save(os.path.join("backend/files", filename))
         return jsonify({"msg": "File uploaded successfully"}), 201
     return jsonify({"msg": "Invalid file type"}), 400
 
@@ -81,4 +81,4 @@ def generate_token():
     return jsonify({'msg': 'Invalid credentials'}), 401
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
