@@ -18,7 +18,7 @@ CORS(app, origins="https://secure-audio-app.vercel.app")
 app.config['UPLOAD_FOLDER'] = 'files'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 app.config['SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
-os.makedirs(files, exist_ok=True)
+os.makedirs('files', exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
