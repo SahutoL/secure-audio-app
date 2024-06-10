@@ -18,6 +18,7 @@ CORS(app, origins="https://secure-audio-app.vercel.app")
 app.config['UPLOAD_FOLDER'] = 'files'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 app.config['SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
+os.makedirs(files, exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -41,7 +42,7 @@ def token_required(f):
 @app.route('/files', methods=['GET'])
 @token_required
 def list_files():
-    files = [{"name": f, "title": os.path.splitext(f)[0]} for f in os.listdir("backend/files") if allowed_file(f)]
+    files = [{"name": f, "title": os.path.splitext(f)[0]} for f in os.listdir("files") if allowed_file(f)]
     return jsonify(files)
 
 @app.route('/files/<filename>', methods=['GET'])
@@ -63,7 +64,7 @@ def upload_file():
         return jsonify({"msg": "No selected file"}), 400
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join("backend/files", filename))
+        file.save(os.path.join("files", filename))
         return jsonify({"msg": "File uploaded successfully"}), 201
     return jsonify({"msg": "Invalid file type"}), 400
 
